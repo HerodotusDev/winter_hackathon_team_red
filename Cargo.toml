@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["cli", "crates/eth-trie-proofs", "crates/evm_proof_faker", "crates/sn-trie-proofs"]
+members = ["cli", "crates/eth-trie-proofs", "crates/sn-trie-proofs", "evm_proof_faker"]
 
 [workspace.dependencies]
 eth-trie-proofs = { path = "crates/eth-trie-proofs" }

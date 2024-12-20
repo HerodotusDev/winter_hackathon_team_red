@@ -70,13 +70,13 @@ impl StorageMptHandler {
         Ok(new_proof.into())
     }
 
-    pub async fn fake_storage_slot(
+    pub async fn fake_storage(
         &self,
         address: alloy::primitives::Address,
         storage_slot: H256,
         block_number: u64,
         new_value: U256,
-    ) -> Result<(), EthTrieError> {
+    ) -> Result<String, EthTrieError> {
         let key = B256::from_slice(storage_slot.as_bytes());
         let proof = self
             .provider
@@ -98,48 +98,48 @@ impl StorageMptHandler {
             .await?;
         let account_payload = self.verify_account_proof(account_proof.clone())?;
 
-        let res = self.verify_storage_proof(storage_proof.clone())?;
-        println!(
-            "old_storage_hash: {:?}",
-            hex::encode(storage_proof.storage_hash.as_bytes())
-        );
-        println!("old_value: {:?}", hex::encode(res.clone()));
-        println!("______________________________________________________");
+        let _res = self.verify_storage_proof(storage_proof.clone())?;
+        // println!(
+        //     "old_storage_hash: {:?}",
+        //     hex::encode(storage_proof.storage_hash.as_bytes())
+        // );
+        // println!("old_value: {:?}", hex::encode(res.clone()));
+        // println!("______________________________________________________");
         let new_slot = encode(new_value);
         let new_storage_proof = self.update_proof_auto(storage_proof.into(), new_slot)?;
-        let new_res = self.verify_storage_proof(new_storage_proof.clone().into())?;
-        println!(
-            "new_storage_hash: {:?}",
-            hex::encode(new_storage_proof.root.as_bytes())
-        );
-        println!("new_value: {:?}", hex::encode(new_res.clone()));
-        println!("______________________________________________________");
+        let _new_res = self.verify_storage_proof(new_storage_proof.clone().into())?;
+        // println!(
+        //     "new_storage_hash: {:?}",
+        //     hex::encode(new_storage_proof.root.as_bytes())
+        // );
+        // println!("new_value: {:?}", hex::encode(new_res.clone()));
+        // println!("______________________________________________________");
 
-        println!(
-            "old_state_root: {:?}",
-            hex::encode(account_proof.root.as_bytes())
-        );
-        println!(
-            "old_account_payload: {:?}",
-            hex::encode(account_payload.clone())
-        );
-        println!("______________________________________________________");
+        // println!(
+        //     "old_state_root: {:?}",
+        //     hex::encode(account_proof.root.as_bytes())
+        // );
+        // println!(
+        //     "old_account_payload: {:?}",
+        //     hex::encode(account_payload.clone())
+        // );
+        // println!("______________________________________________________");
 
         let new_account_payload =
             self.update_account_storage_root(account_payload, new_storage_proof.root)?;
         let new_account_proof =
             self.update_proof_auto(account_proof.into(), new_account_payload)?;
-        let new_account_res = self.verify_account_proof(new_account_proof.clone().into())?;
-        println!(
-            "new_state_root: {:?}",
-            hex::encode(new_account_proof.root.as_bytes())
-        );
-        println!(
-            "new_account_payload: {:?}",
-            hex::encode(new_account_res.clone())
-        );
+        let _new_account_res = self.verify_account_proof(new_account_proof.clone().into())?;
+        // println!(
+        //     "new_state_root: {:?}",
+        //     hex::encode(new_account_proof.root.as_bytes())
+        // );
+        // println!(
+        //     "new_account_payload: {:?}",
+        //     hex::encode(new_account_res.clone())
+        // );
 
-        Ok(())
+        Ok(hex::encode(new_account_proof.root.as_bytes()))
     }
 
     pub async fn get_account_proof(

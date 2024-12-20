@@ -1299,6 +1299,13 @@ dependencies = [
 [[package]]
 name = "evm_proof_faker"
 version = "0.1.0"
+dependencies = [
+ "alloy-primitives",
+ "eth-trie-proofs",
+ "ethereum-types",
+ "tokio",
+ "url",
+]
 
 [[package]]
 name = "fastrand"

@@ -1,0 +1,11 @@
+[package]
+name = "evm_proof_faker"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eth-trie-proofs.workspace = true
+tokio.workspace = true
+alloy-primitives.workspace = true
+url.workspace = true
+ethereum-types.workspace = true

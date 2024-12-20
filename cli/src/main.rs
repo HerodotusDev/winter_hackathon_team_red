@@ -50,6 +50,7 @@ struct MptProof {
 async fn main() {
     let url = Url::parse("https://mainnet.infura.io/v3/66dda5ed7d56432a82c8da4ac54fde8e").unwrap();
     let handler = StorageMptHandler::new(url).unwrap();
+    let addr = "Ca14007Eff0dB1f8135f4C25B34De49AB0d42766";
     // println!("{}", address!("CAf4C8e7516b3A008A8D25111f2ba9AC8ede21AE"));
     // handler.fake_account_balance(address!("CAf4C8e7516b3A008A8D25111f2ba9AC8ede21AE"), 21392048).await.unwrap();
     handler
