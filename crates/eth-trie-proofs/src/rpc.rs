@@ -3,7 +3,9 @@ use alloy::network::Ethereum;
 use alloy::primitives::B256;
 use alloy::providers::{Provider, RootProvider};
 
-use alloy::rpc::types::{Block, BlockTransactions, EIP1186AccountProofResponse, Transaction, TransactionReceipt};
+use alloy::rpc::types::{
+    Block, BlockTransactions, EIP1186AccountProofResponse, Transaction, TransactionReceipt,
+};
 use alloy::transports::http::{Client, Http};
 use alloy::transports::{RpcError, TransportErrorKind};
 
@@ -60,7 +62,6 @@ impl RpcProvider {
         Ok((tx_receipts, block.header.receipts_root))
     }
 
-
     pub(crate) async fn get_tx_index_by_hash(&self, tx_hash: B256) -> Result<u64, EthTrieError> {
         let tx = self
             .provider
@@ -92,7 +93,11 @@ impl RpcProvider {
     }
 
     pub(crate) async fn get_block(&self, block_number: u64) -> Result<Block, EthTrieError> {
-        let header = self.provider.get_block_by_number(block_number.into(), false).await?.expect("block not found");
+        let header = self
+            .provider
+            .get_block_by_number(block_number.into(), false)
+            .await?
+            .expect("block not found");
         Ok(header)
     }
 
@@ -110,7 +115,6 @@ impl RpcProvider {
             .map_err(EthTrieError::from)?;
         Ok(proof)
     }
-    
 }
 
 impl From<RpcError<TransportErrorKind>> for EthTrieError {
