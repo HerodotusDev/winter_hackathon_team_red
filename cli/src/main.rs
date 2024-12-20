@@ -1,6 +1,6 @@
 // cli.rs
 use alloy_primitives::hex::{self, FromHex};
-use alloy_primitives::{address, Address, B256, U256};
+use alloy_primitives::{address, B256, U256};
 use clap::{Parser, Subcommand};
 use eth_trie_proofs::storage::StorageMptHandler;
 use eth_trie_proofs::tx_trie::TxsMptHandler;

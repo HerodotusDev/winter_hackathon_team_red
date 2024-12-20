@@ -6,7 +6,7 @@ use alloy::consensus::Account;
 use alloy::hex;
 use alloy::primitives::{B256, U256};
 use alloy::rpc::types::EIP1186AccountProofResponse;
-use alloy_rlp::{decode_exact, encode, Decodable, Encodable, RlpDecodable, RlpEncodable};
+use alloy_rlp::{encode, Decodable, Encodable, RlpDecodable, RlpEncodable};
 use eth_trie::DB;
 use eth_trie::{EthTrie, MemoryDB, Trie as _};
 use ethereum_types::H256;
@@ -84,7 +84,7 @@ impl StorageMptHandler {
         let key = B256::from_slice(storage_slot.as_bytes());
         let proof = self
             .provider
-            .get_proof(address, vec![key], block_number.into())
+            .get_proof(address, vec![key], block_number)
             .await
             .map_err(EthTrieError::from)?;
         let storage_proof = StorageProof {
@@ -153,7 +153,7 @@ impl StorageMptHandler {
     ) -> Result<AccountProof, EthTrieError> {
         let proof = self
             .provider
-            .get_proof(address, vec![], block_number.into())
+            .get_proof(address, vec![], block_number)
             .await
             .map_err(EthTrieError::from)?;
         self.parse_account_proof(address, block_number, proof).await
@@ -177,9 +177,9 @@ impl StorageMptHandler {
         let root = block.header.state_root;
 
         let account_proof = AccountProof {
-            root: H256::from_slice(&root.as_slice()),
+            root: H256::from_slice(root.as_slice()),
             proof: proof_bytes,
-            key: key,
+            key,
         };
         Ok(account_proof)
     }
@@ -217,7 +217,7 @@ impl StorageMptHandler {
     ) -> Result<Vec<u8>, EthTrieError> {
         let mut account = Account::decode(&mut account_rlp.as_slice()).unwrap();
         account.balance = new_balance;
-        let encoded = encode(&account);
+        let encoded = encode(account);
         Ok(encoded)
     }
 
@@ -228,7 +228,7 @@ impl StorageMptHandler {
     ) -> Result<Vec<u8>, EthTrieError> {
         let mut account = Account::decode(&mut account_rlp.as_slice()).unwrap();
         account.storage_root = B256::from_slice(new_storage_hash.as_bytes());
-        let encoded = encode(&account);
+        let encoded = encode(account);
         Ok(encoded)
     }
 
@@ -255,7 +255,7 @@ impl StorageMptHandler {
             let mut output = [0u8; 32];
             sha3.update(&node_encoded.to_vec());
             sha3.finalize(&mut output);
-            let hash = H256::from_slice(&output.as_slice());
+            let hash = H256::from_slice(output.as_slice());
 
             if root_hash.eq(&hash) || node_encoded.len() >= Self::HASHED_LENGTH {
                 proof_db.insert(hash.as_bytes(), node_encoded).unwrap();
@@ -276,17 +276,17 @@ impl StorageMptHandler {
     fn address_to_key(&self, address: alloy::primitives::Address) -> H256 {
         let mut keccak = Keccak::v256();
         let mut output = [0u8; 32];
-        keccak.update(&address.to_vec());
+        keccak.update(address.as_ref());
         keccak.finalize(&mut output);
-        H256::from_slice(&output.as_slice())
+        H256::from_slice(output.as_slice())
     }
 
     fn storage_slot_to_key(&self, storage_key: H256) -> H256 {
         let mut keccak = Keccak::v256();
         let mut output = [0u8; 32];
-        keccak.update(&storage_key.as_bytes());
+        keccak.update(storage_key.as_bytes());
         keccak.finalize(&mut output);
-        H256::from_slice(&output.as_slice())
+        H256::from_slice(output.as_slice())
     }
 }
 
