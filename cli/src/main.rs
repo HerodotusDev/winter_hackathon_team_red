@@ -1,6 +1,6 @@
 // cli.rs
 use alloy_primitives::hex::{self, FromHex};
-use alloy_primitives::{B256, Address, address};
+use alloy_primitives::{B256, Address, address, U256};
 use clap::{Parser, Subcommand};
 use eth_trie_proofs::tx_trie::TxsMptHandler;
 use eth_trie_proofs::storage::StorageMptHandler;
@@ -51,8 +51,13 @@ async fn main() {
     let url = Url::parse("https://mainnet.infura.io/v3/66dda5ed7d56432a82c8da4ac54fde8e").unwrap();
     let handler = StorageMptHandler::new(url).unwrap();
     // println!("{}", address!("CAf4C8e7516b3A008A8D25111f2ba9AC8ede21AE"));
-    handler.fake_account_balance(address!("CAf4C8e7516b3A008A8D25111f2ba9AC8ede21AE"), 21392048).await.unwrap();
-    // handler.fake_storage_slot(address!("Ca14007Eff0dB1f8135f4C25B34De49AB0d42766"), H256::from_slice(hex::decode("4d13244817f246930fdc27dd358d16eb57bb7af945c5c4daddbee79636769dc8").unwrap().as_slice()), 21392048).await.unwrap();
+    // handler.fake_account_balance(address!("CAf4C8e7516b3A008A8D25111f2ba9AC8ede21AE"), 21392048).await.unwrap();
+    handler.fake_storage_slot(
+        address!("Ca14007Eff0dB1f8135f4C25B34De49AB0d42766"), 
+        H256::from_slice(hex::decode("4d13244817f246930fdc27dd358d16eb57bb7af945c5c4daddbee79636769dc8").unwrap().as_slice()), 
+        21392048,
+        U256::from_be_slice(hex::decode("00").unwrap().as_slice())
+    ).await.unwrap();
 }
 // async fn main() -> Result<(), EthTrieError> {
 //     let cli = Cli::parse();
