@@ -6,11 +6,10 @@ use alloy::consensus::Account;
 use alloy::hex;
 use alloy::primitives::{B256, U256};
 use alloy::rpc::types::EIP1186AccountProofResponse;
-use alloy_rlp::{encode, Decodable, Encodable, RlpDecodable, RlpEncodable};
+use alloy_rlp::{encode, Decodable};
 use eth_trie::DB;
 use eth_trie::{EthTrie, MemoryDB, Trie as _};
 use ethereum_types::H256;
-use rlp;
 use tiny_keccak::Hasher;
 use tiny_keccak::Keccak;
 use url::Url;
@@ -18,9 +17,6 @@ use url::Url;
 pub struct StorageMptHandler {
     provider: RpcProvider,
 }
-
-#[derive(Debug, Clone, RlpEncodable, RlpDecodable)]
-struct PayloadNode(Vec<Vec<u8>>);
 
 #[derive(Debug, Clone)]
 pub struct AccountProof {
@@ -109,7 +105,7 @@ impl StorageMptHandler {
         );
         println!("old_value: {:?}", hex::encode(res.clone()));
         println!("______________________________________________________");
-        let new_slot = self.update_storage_slot(res, new_value)?;
+        let new_slot = encode(new_value);
         let new_storage_proof = self.update_proof_auto(storage_proof.into(), new_slot)?;
         let new_res = self.verify_storage_proof(new_storage_proof.clone().into())?;
         println!(
@@ -232,15 +228,6 @@ impl StorageMptHandler {
         Ok(encoded)
     }
 
-    fn update_storage_slot(
-        &self,
-        storage_rlp: Vec<u8>,
-        new_value: U256,
-    ) -> Result<Vec<u8>, EthTrieError> {
-        let storage = rlp::decode::<Vec<u8>>(&storage_rlp).unwrap();
-        let encoded = encode(new_value);
-        Ok(encoded)
-    }
     const HASHED_LENGTH: usize = 32;
 
     fn update_proof_auto(
