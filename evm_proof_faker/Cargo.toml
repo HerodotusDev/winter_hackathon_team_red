@@ -1,15 +1,11 @@
 [package]
-name = "cli"
+name = "evm_proof_faker"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 eth-trie-proofs.workspace = true
 tokio.workspace = true
-clap.workspace = true
-serde_with.workspace = true
-serde.workspace = true
-serde_json.workspace = true
 alloy-primitives.workspace = true
 url.workspace = true
 ethereum-types.workspace = true
