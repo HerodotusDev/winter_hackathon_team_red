@@ -19,6 +19,13 @@ pub struct StorageMptHandler {
 }
 
 #[derive(Debug, Clone)]
+pub struct FullStorageProof {
+    account_proof: AccountProof,
+    account: Account,
+    storage_proof: StorageProof
+}
+
+#[derive(Debug, Clone)]
 pub struct AccountProof {
     root: H256,
     proof: Vec<Vec<u8>>,
@@ -76,7 +83,7 @@ impl StorageMptHandler {
         storage_slot: H256,
         block_number: u64,
         new_value: U256,
-    ) -> Result<String, EthTrieError> {
+    ) -> Result<FullStorageProof, EthTrieError> {
         let key = B256::from_slice(storage_slot.as_bytes());
         let proof = self
             .provider
@@ -128,7 +135,7 @@ impl StorageMptHandler {
         let new_account_payload =
             self.update_account_storage_root(account_payload, new_storage_proof.root)?;
         let new_account_proof =
-            self.update_proof_auto(account_proof.into(), new_account_payload)?;
+            self.update_proof_auto(account_proof.into(), new_account_payload.clone())?;
         let _new_account_res = self.verify_account_proof(new_account_proof.clone().into())?;
         // println!(
         //     "new_state_root: {:?}",
@@ -138,8 +145,15 @@ impl StorageMptHandler {
         //     "new_account_payload: {:?}",
         //     hex::encode(new_account_res.clone())
         // );
+        let account = Account::decode(&mut new_account_payload.as_slice()).unwrap();
+        let full_proof = FullStorageProof {
+            account_proof: new_account_proof.into(),
+            account: account,
+            storage_proof: new_storage_proof.into(),
+        };
 
-        Ok(hex::encode(new_account_proof.root.as_bytes()))
+        Ok(full_proof)
+
     }
 
     pub async fn get_account_proof(

@@ -1,6 +1,6 @@
 use alloy_primitives::{hex, Address, U256};
 use eth_trie_proofs::error::EthTrieError;
-use eth_trie_proofs::storage::StorageMptHandler;
+use eth_trie_proofs::storage::{FullStorageProof, StorageMptHandler};
 use ethereum_types::H256;
 use url::Url;
 
@@ -15,7 +15,7 @@ pub trait ProofFaker {
         storage_slot: String,
         block_number: String,
         new_value: String,
-    ) -> Result<String, EthTrieError>;
+    ) -> Result<FullStorageProof, EthTrieError>;
 }
 
 impl ProofFaker for Instance {
@@ -32,7 +32,7 @@ impl ProofFaker for Instance {
         storage_slot: String,
         block_number: String,
         new_value: String,
-    ) -> Result<String, EthTrieError> {
+    ) -> Result<FullStorageProof, EthTrieError> {
         let address = address.parse::<Address>().unwrap();
         println!("Address: {:?}", address);
         let storage_slot = H256::from_slice(hex::decode(storage_slot).unwrap().as_slice());
@@ -41,11 +41,11 @@ impl ProofFaker for Instance {
         println!("block number: {:?}", block_number);
         let new_value = U256::from_be_slice(hex::decode(new_value).unwrap().as_slice());
         println!("new value: {:?}", new_value);
-        let root = self
+        let proof = self
             .handler
             .fake_storage(address, storage_slot, block_number, new_value)
             .await
             .unwrap();
-        Ok(root)
+        Ok(proof)
     }
 }
