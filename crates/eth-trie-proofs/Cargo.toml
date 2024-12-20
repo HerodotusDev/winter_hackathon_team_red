@@ -11,7 +11,8 @@ categories = ["cryptography", "data-structures"]
 exclude = [".github"]
 
 [dependencies]
-tokio.workspace = true
+getrandom = { version = "0.2", features = ["js"] }
+tokio = { version = "1.36.0", features = ["rt", "macros"] }
 alloy-primitives.workspace = true
 alloy.workspace = true
 url.workspace = true
