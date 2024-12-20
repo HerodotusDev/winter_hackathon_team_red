@@ -954,6 +954,7 @@ dependencies = [
  "alloy-primitives",
  "clap",
  "eth-trie-proofs",
+ "ethereum-types",
  "serde",
  "serde_json",
  "serde_with",
@@ -1247,7 +1248,9 @@ dependencies = [
  "eth_trie",
  "ethereum-types",
  "reqwest 0.11.27",
+ "rlp 0.6.1",
  "thiserror",
+ "tiny-keccak",
  "tokio",
  "url",
 ]
@@ -1263,7 +1266,7 @@ dependencies = [
  "keccak-hash",
  "log",
  "parking_lot",
- "rlp",
+ "rlp 0.5.2",
 ]
 
 [[package]]
@@ -1809,7 +1812,7 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f28220f89297a075ddc7245cd538076ee98b01f2a9c23a53a4f1105d5a322808"
 dependencies = [
- "rlp",
+ "rlp 0.5.2",
 ]
 
 [[package]]
@@ -2570,6 +2573,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "rlp"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fa24e92bb2a83198bb76d661a71df9f7076b8c420b8696e4d3d97d50d94479e3"
+dependencies = [
+ "bytes",
+ "rustc-hex",
+]
+
+[[package]]
 name = "ruint"
 version = "1.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2586,7 +2599,7 @@ dependencies = [
  "primitive-types",
  "proptest",
  "rand",
- "rlp",
+ "rlp 0.5.2",
  "ruint-macro",
  "serde",
  "valuable",
