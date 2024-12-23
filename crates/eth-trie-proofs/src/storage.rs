@@ -20,23 +20,23 @@ pub struct StorageMptHandler {
 
 #[derive(Debug, Clone)]
 pub struct FullStorageProof {
-    account_proof: AccountProof,
-    account: Account,
-    storage_proof: StorageProof
+    pub account_proof: AccountProof,
+    pub account: Account,
+    pub storage_proof: StorageProof,
 }
 
 #[derive(Debug, Clone)]
 pub struct AccountProof {
-    root: H256,
-    proof: Vec<Vec<u8>>,
-    key: H256,
+    pub root: H256,
+    pub proof: Vec<Vec<u8>>,
+    pub key: H256,
 }
 
 #[derive(Debug, Clone)]
 pub struct StorageProof {
-    storage_hash: H256,
-    storage_proof: Vec<Vec<u8>>,
-    storage_slot: H256,
+    pub storage_hash: H256,
+    pub storage_proof: Vec<Vec<u8>>,
+    pub storage_slot: H256,
 }
 
 #[derive(Debug, Clone)]
@@ -153,7 +153,6 @@ impl StorageMptHandler {
         };
 
         Ok(full_proof)
-
     }
 
     pub async fn get_account_proof(
