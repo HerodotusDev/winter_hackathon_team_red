@@ -10,6 +10,7 @@ use alloy_rlp::{encode, Decodable};
 use eth_trie::DB;
 use eth_trie::{EthTrie, MemoryDB, Trie as _};
 use ethereum_types::H256;
+use serde::{Serialize, Serializer};
 use tiny_keccak::Hasher;
 use tiny_keccak::Keccak;
 use url::Url;
@@ -18,25 +19,35 @@ pub struct StorageMptHandler {
     provider: RpcProvider,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct FullStorageProof {
     pub account_proof: AccountProof,
     pub account: Account,
     pub storage_proof: StorageProof,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct AccountProof {
     pub root: H256,
+    #[serde(serialize_with = "serialize_vec_vec_u8_as_hex")]
     pub proof: Vec<Vec<u8>>,
     pub key: H256,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct StorageProof {
     pub storage_hash: H256,
+    #[serde(serialize_with = "serialize_vec_vec_u8_as_hex")]
     pub storage_proof: Vec<Vec<u8>>,
     pub storage_slot: H256,
+}
+
+fn serialize_vec_vec_u8_as_hex<S>(value: &[Vec<u8>], serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    let hex_strings: Vec<String> = value.iter().map(hex::encode).collect();
+    serializer.serialize_str(&hex_strings.join(""))
 }
 
 #[derive(Debug, Clone)]
