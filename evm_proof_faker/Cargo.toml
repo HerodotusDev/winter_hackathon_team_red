@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+tokio = { version = "1.42.0", features = ["rt", "macros"] }
 eth-trie-proofs.workspace = true
-tokio.workspace = true
 alloy-primitives.workspace = true
 url.workspace = true
 ethereum-types.workspace = true
